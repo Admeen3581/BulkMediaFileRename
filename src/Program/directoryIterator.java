@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class directoryIterator {
+public class DirectoryIterator {
 
     public static void iterate(FileHandle f, NameProvider np, int levels) throws IOException {
         if(levels >0)
