@@ -1,19 +1,18 @@
 package Program;
 
 import FileHandler.FileHandle;
-import NameProviders.CounterNameProvider;
-import NameProviders.DateNameProvider;
-import NameProviders.MultiNameProvider;
+import NameProviders.*;
 
 import java.io.File;
 
 public class Main {
     public static void main (String [] args) {
-        int levels = Integer.parseInt(args[0]);
-        String path = args[1];
+        int levels = 2;
+        String path = "C:\\Users\\The0M\\Desktop\\Gravity Falls";
 
+        NameProvider namingPattern = new MultiNameProvider(new StaticNameProvider("Gravity Falls"), new MultiNameProvider(new PrefixNameProvider("E", new SubFolderCounterprovider()), new PrefixNameProvider("S", new CounterNameProvider()), "" ) , " - ");
         try {
-            directoryIterator.iterate(new FileHandle(new File(path)), new MultiNameProvider(new DateNameProvider(), new CounterNameProvider(), "-"), levels);
+            DirectoryIterator.iterate(new FileHandle(new File(path)),namingPattern, levels);
         }
         catch (Exception e)
         {

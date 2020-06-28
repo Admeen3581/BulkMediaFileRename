@@ -17,10 +17,11 @@ public class DirectoryIterator {
             }
 
             String contents[] = f.list();
+            //System.out.println(contents);
             np.resetState();
             for (String s : contents) {
                 FileHandle currentFile = new FileHandle(new File(f.getPath() + "\\" +s));
-                if (currentFile.isDirectory()) iterate(currentFile, np, --levels);
+                if (currentFile.isDirectory()) iterate(currentFile, np, levels-1);
                 else currentFile.renameFile(f.getPath() + "\\"  + np.getName(f.getFile()));
             }
 
