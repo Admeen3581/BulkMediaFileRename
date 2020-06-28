@@ -12,7 +12,7 @@ public class SubFolderCounterprovider implements NameProvider{
 
     @Override
     public void resetState() {
-       counter ++;
+       counter++;
     }
 
     @Override

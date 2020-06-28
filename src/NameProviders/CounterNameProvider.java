@@ -6,12 +6,16 @@ import java.util.Stack;
 
 public class CounterNameProvider implements NameProvider {
     long counter;
+    long initialValue;
+
     Stack <Long> stack = new Stack<>();
 
-    public CounterNameProvider() {counter = 0;}
+    public CounterNameProvider() {initialValue = 0; counter = initialValue;}
+
+    public CounterNameProvider(long initialValue) {this.initialValue = initialValue; counter = initialValue;}
 
     @Override
-    public void resetState() { stack.push(counter); counter = 0; }
+    public void resetState() { stack.push(counter); counter = initialValue; }
 
     @Override
     public void inferOldState() { counter = stack.pop(); }

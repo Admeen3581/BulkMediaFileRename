@@ -10,7 +10,7 @@ public class Main {
         int levels = 2;
         String path = "C:\\Users\\The0M\\Desktop\\Gravity Falls";
 
-        NameProvider namingPattern = new MultiNameProvider(new StaticNameProvider("Gravity Falls"), new MultiNameProvider(new PrefixNameProvider("E", new SubFolderCounterprovider()), new PrefixNameProvider("S", new CounterNameProvider()), "" ) , " - ");
+        NameProvider namingPattern = new MultiNameProvider(new StaticNameProvider("Gravity Falls"), new MultiNameProvider(new PrefixNameProvider("S", new SubFolderCounterprovider()), new PrefixNameProvider("E", new CounterNameProvider(1)), "" ) , " - ");
         try {
             DirectoryIterator.iterate(new FileHandle(new File(path)),namingPattern, levels);
         }
