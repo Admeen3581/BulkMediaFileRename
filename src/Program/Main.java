@@ -8,9 +8,9 @@ import java.io.File;
 public class Main {
     public static void main (String [] args) {
         int levels = 2;
-        String path = "C:\\Users\\The0M\\Desktop\\Gravity Falls";
+        String path = "Path";
 
-        NameProvider namingPattern = new MultiNameProvider(new StaticNameProvider("Gravity Falls"), new MultiNameProvider(new PrefixNameProvider("S", new SubFolderCounterprovider()), new PrefixNameProvider("E", new CounterNameProvider(1)), "" ) , " - ");
+        NameProvider namingPattern = new MultiNameProvider(new StaticNameProvider("Name"), new MultiNameProvider(new PrefixNameProvider("Prefix", new SubFolderCounterprovider()), new PrefixNameProvider("Prefix", new CounterNameProvider(1)), "" ) , " - ");
         try {
             DirectoryIterator.iterate(new FileHandle(new File(path)),namingPattern, levels);
         }
