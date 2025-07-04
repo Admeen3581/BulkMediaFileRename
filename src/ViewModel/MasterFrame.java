@@ -19,18 +19,6 @@ import javafx.stage.Stage;
 public class MasterFrame extends Application
 {
    /**
-    * Constructs a MasterFrame object and launches the JavaFX application.
-    *
-    * @param args the command-line arguments (From main method) passed to the application.
-    *             These arguments are passed to the JavaFX runtime during application
-    *             launch.
-    */
-   public MasterFrame(String[] args)
-   {
-      Application.launch(args);
-   }
-
-   /**
     * Initializes and displays the primary stage of the JavaFX application.
     * This method is invoked by the JavaFX framework after the application has
     * started. It sets up the stage with a scene containing a group of elements

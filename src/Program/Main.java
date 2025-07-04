@@ -2,12 +2,13 @@ package Program;
 
 //Imports
 import ViewModel.MasterFrame;
+import javafx.application.Application;
 
 
 public class Main
 {
     public static void main(String[] args)
     {
-        MasterFrame mf = new MasterFrame(args);
+        Application.launch(MasterFrame.class, args);
     }
 }
