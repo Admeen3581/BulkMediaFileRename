@@ -1,8 +1,53 @@
 package ViewModel;
 
-import javax.swing.*;
+//Imports
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class MasterFrame extends JFrame
+/**
+ * The MasterFrame class extends the JavaFX Application class to configure
+ * and launch a primary JavaFX application window. This class initializes
+ * the JavaFX application and sets up a basic scene containing a group of
+ * elements.
+ *
+ * The application's main responsibility is to provide an entry point for
+ * launching a JavaFX-based graphical user interface (GUI).
+ */
+
+public class MasterFrame extends Application
 {
+   /**
+    * Constructs a MasterFrame object and launches the JavaFX application.
+    *
+    * @param args the command-line arguments (From main method) passed to the application.
+    *             These arguments are passed to the JavaFX runtime during application
+    *             launch.
+    */
+   public MasterFrame(String[] args)
+   {
+      Application.launch(args);
+   }
 
+   /**
+    * Initializes and displays the primary stage of the JavaFX application.
+    * This method is invoked by the JavaFX framework after the application has
+    * started. It sets up the stage with a scene containing a group of elements
+    * and makes the stage visible.
+    *
+    * @param stage the primary stage provided by the JavaFX runtime. This stage
+    *              serves as the top-level container for the application.
+    * @throws Exception if any error occurs during the initialization or setup
+    *                   of the stage.
+    */
+   @Override
+   public void start(Stage stage) throws Exception
+   {
+      Group group = new Group();
+      Scene scene = new Scene(group);
+
+      stage.setScene(scene);
+      stage.show();
+   }
 }
