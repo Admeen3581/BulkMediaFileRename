@@ -1,5 +1,6 @@
 package ViewModel.Controllers;
 
+import FileHandler.ExtensionHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -47,12 +48,12 @@ public class MasterFrameController implements Initializable
          }
          String fileName = this.file.getName().toUpperCase();
 
-         if (isVideo(fileName))
+         if (ExtensionHandler.isVideo(fileName))
          {
             displayVideo();
          }
 
-         else if(isImage(fileName))
+         else if(ExtensionHandler.isImage(fileName))
          {
             displayImage();
          }
@@ -127,30 +128,5 @@ public class MasterFrameController implements Initializable
 
       this.imageViewer.setVisible(true);
       this.videoViewer.setVisible(false);
-   }
-
-   /**
-    * Determines whether the given file name corresponds to a video file.
-    *
-    * @param fileName the name of the file to be checked
-    * @return true if the file name ends with ".mp4", false otherwise
-    */
-   private boolean isVideo(String fileName)
-   {
-      return fileName.endsWith(".MP4") || fileName.endsWith(".MOV");
-   }
-
-   /**
-    * Determines whether the given file name corresponds to an image file.
-    *
-    * @param fileName the name of the file to be checked
-    * @return true if the file name ends with ".gif", ".jpg", ".png", or ".jpeg", false otherwise
-    */
-   private boolean isImage(String fileName)
-   {
-      return fileName.endsWith(".GIF") ||
-             fileName.endsWith(".JPG") ||
-             fileName.endsWith(".PNG") ||
-             fileName.endsWith(".JPEG");
    }
 }
