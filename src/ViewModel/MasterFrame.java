@@ -24,10 +24,17 @@ public class MasterFrame extends Application
    @Override
    public void start(Stage stage) throws Exception
    {
-      Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/MasterFrame.fxml")));
-      Scene scene = new Scene(root);
+      try
+      {
+         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/MasterFrame.fxml")));
+         Scene scene = new Scene(root);
 
-      stage.setScene(scene);
-      stage.show();
+         stage.setScene(scene);
+         stage.show();
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+      }
    }
 }
