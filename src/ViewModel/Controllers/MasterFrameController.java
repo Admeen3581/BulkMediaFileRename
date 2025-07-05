@@ -17,6 +17,7 @@ public class MasterFrameController implements Initializable
 {
    @FXML
    private MediaView videoViewer;
+   @FXML
    private ImageView imageViewer;
 
    private File file;//doesn't support .MOV
@@ -38,13 +39,13 @@ public class MasterFrameController implements Initializable
    {
       try
       {
-         this.file = new File("assets/AUPJ8534.mp4");//hardcoded for testing
+         this.file = new File("assets/aupj8534.mp4");//hardcoded for testing
          if (!file.exists())
          {
             System.err.println("Media file not found: " + file.getAbsolutePath());
             return;
          }
-         String fileName = this.file.getName();
+         String fileName = this.file.getName().toUpperCase();
 
          if (isVideo(fileName))
          {
@@ -108,8 +109,7 @@ public class MasterFrameController implements Initializable
       this.videoViewer.setMediaPlayer(player);
 
       this.videoViewer.setVisible(true);
-      if(imageViewer != null)
-         this.imageViewer.setVisible(false);
+      this.imageViewer.setVisible(false);
    }
 
    /**
@@ -126,8 +126,7 @@ public class MasterFrameController implements Initializable
       this.imageViewer.setImage(image);
 
       this.imageViewer.setVisible(true);
-      if(videoViewer != null)
-         this.videoViewer.setVisible(false);
+      this.videoViewer.setVisible(false);
    }
 
    /**
@@ -138,7 +137,7 @@ public class MasterFrameController implements Initializable
     */
    private boolean isVideo(String fileName)
    {
-      return fileName.endsWith(".mp4");
+      return fileName.endsWith(".MP4") || fileName.endsWith(".MOV");
    }
 
    /**
@@ -149,9 +148,9 @@ public class MasterFrameController implements Initializable
     */
    private boolean isImage(String fileName)
    {
-      return fileName.endsWith(".gif") ||
-             fileName.endsWith(".jpg") ||
-             fileName.endsWith(".png") ||
-             fileName.endsWith(".jpeg");
+      return fileName.endsWith(".GIF") ||
+             fileName.endsWith(".JPG") ||
+             fileName.endsWith(".PNG") ||
+             fileName.endsWith(".JPEG");
    }
 }
