@@ -20,28 +20,28 @@ public class DirectoryIteratorTest
    @Test
    public void testIsImage()
    {
-      assertTrue(ExtensionHandler.isImage("photo.jpg"));
-      assertTrue(ExtensionHandler.isImage("image.PNG"));
-      assertTrue(ExtensionHandler.isImage("animation.gif"));
-      assertTrue(ExtensionHandler.isImage("picture.jpeg"));
+      assertTrue(ExtensionHandler.isImage(new File("photo.jpg")));
+      assertTrue(ExtensionHandler.isImage(new File("image.PNG")));
+      assertTrue(ExtensionHandler.isImage(new File("animation.gif")));
+      assertTrue(ExtensionHandler.isImage(new File("picture.jpeg")));
 
-      assertFalse(ExtensionHandler.isImage("video.mp4"));
-      assertFalse(ExtensionHandler.isImage("file.txt"));
-      assertFalse(ExtensionHandler.isImage(""));
+      assertFalse(ExtensionHandler.isImage(new File("video.mp4")));
+      assertFalse(ExtensionHandler.isImage(new File("video.MOV")));
+      assertFalse(ExtensionHandler.isImage(new File("file.txt")));
       assertFalse(ExtensionHandler.isImage(null));
    }
 
    @Test
    public void testIsVideo()
    {
-      assertTrue(ExtensionHandler.isVideo("video.mp4"));
+      assertTrue(ExtensionHandler.isVideo(new File("video.mp4")));
+      assertTrue(ExtensionHandler.isVideo(new File("video.MOV")));
 
-      assertFalse(ExtensionHandler.isVideo("photo.jpg"));
-      assertFalse(ExtensionHandler.isVideo("image.PNG"));
-      assertFalse(ExtensionHandler.isVideo("animation.gif"));
-      assertFalse(ExtensionHandler.isVideo("picture.jpeg"));
-      assertFalse(ExtensionHandler.isVideo("file.txt"));
-      assertFalse(ExtensionHandler.isVideo(""));
+      assertFalse(ExtensionHandler.isVideo(new File("photo.jpg")));
+      assertFalse(ExtensionHandler.isVideo(new File("image.PNG")));
+      assertFalse(ExtensionHandler.isVideo(new File("animation.gif")));
+      assertFalse(ExtensionHandler.isVideo(new File("picture.jpeg")));
+      assertFalse(ExtensionHandler.isVideo(new File("file.txt")));
       assertFalse(ExtensionHandler.isVideo(null));
    }
 

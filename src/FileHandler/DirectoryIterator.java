@@ -27,7 +27,7 @@ public class DirectoryIterator
 
         for (File file : files)
         {
-            if (file.isFile() && ExtensionHandler.isAcceptable(file.getName()))
+            if (file.isFile() && ExtensionHandler.isAcceptable(file))
             {
                 mediaFiles.add(file);
             }

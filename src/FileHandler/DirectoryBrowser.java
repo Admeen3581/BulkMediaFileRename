@@ -1,8 +1,8 @@
 package FileHandler;
 
+//Imports
 import javax.swing.*;
 import java.io.File;
-import java.net.URI;
 
 public class DirectoryBrowser
 {

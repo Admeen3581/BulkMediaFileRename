@@ -43,27 +43,26 @@ public class MasterFrameController implements Initializable
       try
       {
          //Get a single file to start.
-         this.file = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")).get(0);
+         this.file = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")).get(3);
 
          if (!file.exists())
          {
             System.err.println("Media file not found: " + file.getAbsolutePath());
             return;
          }
-         String fileName = this.file.getName().toUpperCase();
 
-         if (ExtensionHandler.isVideo(fileName))
+         if (ExtensionHandler.isVideo(this.file))
          {
             displayVideo();
          }
 
-         else if(ExtensionHandler.isImage(fileName))
+         else if(ExtensionHandler.isImage(this.file))
          {
             displayImage();
          }
          else
          {
-            System.err.println("Unsupported file type: " + fileName);
+            System.err.println("Unsupported file type: " + this.file.getName());
             videoViewer.setVisible(false);
             imageViewer.setVisible(false);
          }
@@ -107,7 +106,12 @@ public class MasterFrameController implements Initializable
     */
    private void displayVideo()
    {
-      Media media = new Media(file.toURI().toString());
+      if (this.file.getName().toUpperCase().endsWith(".MOV"))
+      {
+         this.file = ExtensionHandler.convertToCompatibleType(this.file);
+      }
+
+      Media media = new Media(this.file.toURI().toString());
       MediaPlayer player = new MediaPlayer(media);
       player.setAutoPlay(true);
       player.setCycleCount(MediaPlayer.INDEFINITE);
