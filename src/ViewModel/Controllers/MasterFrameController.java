@@ -1,5 +1,7 @@
 package ViewModel.Controllers;
 
+import FileHandler.DirectoryBrowser;
+import FileHandler.DirectoryIterator;
 import FileHandler.ExtensionHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,7 +42,9 @@ public class MasterFrameController implements Initializable
    {
       try
       {
-         this.file = new File("assets/aupj8534.mp4");//hardcoded for testing
+         //Get a single file to start.
+         this.file = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")).get(0);
+
          if (!file.exists())
          {
             System.err.println("Media file not found: " + file.getAbsolutePath());
