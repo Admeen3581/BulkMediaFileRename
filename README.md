@@ -15,6 +15,8 @@
 
 ## ✨ Features
 
+<div align="center">
+
 | Feature | Description |
 |---------|-------------|
 | 🖼️ **Visual Media Preview** | View images and videos before renaming |
@@ -24,6 +26,8 @@
 | 🎥 **Supported Formats** | Images (.gif, .jpg, .png, .jpeg) & Videos (.mp4) |
 | 🔄 **Auto-Conversion** | Will automatically convert .mov files |
 | 🗑️ **File Deletion** | Remove files that are no longer relevant |
+
+</div>
 
 ## 🚀 Getting Started
 
