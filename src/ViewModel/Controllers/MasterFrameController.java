@@ -19,12 +19,14 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MasterFrameController implements Initializable
 {
    @FXML
    private MediaView videoViewer;
+   private MediaPlayer mediaPlayer;
    @FXML
    private ImageView imageViewer;
    @FXML
@@ -35,6 +37,8 @@ public class MasterFrameController implements Initializable
    private Label extensionLabel;
 
    private File file;//doesn't support .MOV
+   private List<File> directory;
+   private int directoryCurrentIndex;
 
    /**
     * Initializes the controller and sets up media display functionality.
@@ -53,51 +57,64 @@ public class MasterFrameController implements Initializable
    {
       try
       {
-         //Get a single file to start.
          try
          {
-            this.file = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")).get(0);
-         } catch (NullPointerException e)
+            //Future: Allow user to override and select a specific start point.
+            this.directory = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse"));
+            this.file = this.directory.get(0);
+            this.directoryCurrentIndex = 0;
+         }
+         catch (NullPointerException e)//User Cancel Action
          {
             System.err.println("No directory selected");
             Platform.exit();//force closes the GUI
             return;
          }
 
-         if (!file.exists())
-         {
-            System.err.println("Media file not found: " + file.getAbsolutePath());
-            return;
-         }
-
-         if (ExtensionHandler.isVideo(this.file))
-         {
-            displayVideo();
-         } else if (ExtensionHandler.isImage(this.file))
-         {
-            displayImage();
-         } else
-         {
-            System.err.println("Unsupported file type: " + this.file.getName());
-            videoViewer.setVisible(false);
-            imageViewer.setVisible(false);
-            return;
-         }
-
-         extensionLabel.setText("." + this.file.getName().substring(this.file.getName().lastIndexOf(".") + 1));
-         renameErrorFieldLabel.setVisible(false);
-         renameTextfield.setText(this.file.getName().substring(0, this.file.getName().lastIndexOf(".")));
-
-         //Await loading of JavaFX Stage & Scene
-         Platform.runLater(() -> {
-            renameTextfield.requestFocus();
-            renameTextfield.selectAll();
-         });
-      } catch (Exception e)
+         this.runMediaRename();
+      }
+      catch (Exception e)
       {
          System.err.println("Error initializing media player: " + e.getMessage());
          e.printStackTrace();
       }
+   }
+
+   private void runMediaRename()
+   {
+      this.file = this.directory.get(this.directoryCurrentIndex);
+
+      if (!file.exists())
+      {
+         System.err.println("Media file not found: " + file.getAbsolutePath());
+         return;
+      }
+
+      if (ExtensionHandler.isVideo(this.file))
+      {
+         this.displayVideo();
+      }
+      else if (ExtensionHandler.isImage(this.file))
+      {
+         this.displayImage();
+      }
+      else
+      {
+         System.err.println("Unsupported file type: " + this.file.getName());
+         this.videoViewer.setVisible(false);
+         this.imageViewer.setVisible(false);
+         return;
+      }
+
+      this.extensionLabel.setText("." + this.file.getName().substring(this.file.getName().lastIndexOf(".") + 1).toUpperCase());
+      this.renameErrorFieldLabel.setVisible(false);
+      this.renameTextfield.setText(this.file.getName().substring(0, this.file.getName().lastIndexOf(".")));
+
+      //Await loading of JavaFX Stage & Scene
+      Platform.runLater(() -> {
+         renameTextfield.requestFocus();
+         renameTextfield.selectAll();
+      });
    }
 
    /**
@@ -133,6 +150,32 @@ public class MasterFrameController implements Initializable
       else
       {
          this.renameErrorFieldLabel.setVisible(false);
+
+         //Video files get locked when playing. Kill the media before renaming.
+         if(this.mediaPlayer != null)
+         {
+            this.mediaPlayer.stop();
+            this.mediaPlayer.dispose();
+            this.mediaPlayer = null;
+         }
+
+         if(this.file.renameTo(new File(this.file.getParentFile(), textFieldInput + this.extensionLabel.getText())))
+         {
+            //switch scene
+            this.directoryCurrentIndex++;
+            if(this.directoryCurrentIndex >= this.directory.size())
+            {
+               this.exit();
+            }
+            else
+            {
+               this.runMediaRename();
+            }
+         }
+         else
+         {
+            this.displayTextfieldError("! - Unable to rename file");
+         }
       }
    }
 
@@ -164,10 +207,10 @@ public class MasterFrameController implements Initializable
       }
 
       Media media = new Media(this.file.toURI().toString());
-      MediaPlayer player = new MediaPlayer(media);
-      player.setAutoPlay(true);
-      player.setCycleCount(MediaPlayer.INDEFINITE);
-      this.videoViewer.setMediaPlayer(player);
+      this.mediaPlayer = new MediaPlayer(media);
+      this.mediaPlayer.setAutoPlay(true);
+      this.mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+      this.videoViewer.setMediaPlayer(this.mediaPlayer);
 
       this.videoViewer.setVisible(true);
       this.imageViewer.setVisible(false);
@@ -233,6 +276,13 @@ public class MasterFrameController implements Initializable
 
          shake.play();
       }
+   }
+
+
+   private void exit()
+   {
+      //Display that directory rename is complete.
+      //Force exit.
    }
 
 }
