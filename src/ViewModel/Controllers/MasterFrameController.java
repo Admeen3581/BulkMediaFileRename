@@ -3,9 +3,12 @@ package ViewModel.Controllers;
 import FileHandler.DirectoryBrowser;
 import FileHandler.DirectoryIterator;
 import FileHandler.ExtensionHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
@@ -22,19 +25,25 @@ public class MasterFrameController implements Initializable
    private MediaView videoViewer;
    @FXML
    private ImageView imageViewer;
+   @FXML
+   private TextField renameTextfield;
+   @FXML
+   private Label renameErrorFieldLabel;
+   @FXML
+   private Label extensionLabel;
 
    private File file;//doesn't support .MOV
 
    /**
     * Initializes the controller and sets up media display functionality.
-    *
+    * <p>
     * This method is called after the FXML loader has fully initialized the scene. It attempts
     * to load a media file and determine its type based on the file extension. Supported file
     * types include videos (e.g., ".mp4") and images (e.g., ".gif", ".jpg", ".png", ".jpeg").
     * It then displays the appropriate media type in the respective viewer component. If the
     * file type is unsupported, no media is displayed, and an error message is logged.
     *
-    * @param url the location used to resolve relative paths for the root object
+    * @param url            the location used to resolve relative paths for the root object
     * @param resourceBundle the resource bundle to localize the root object
     */
    @Override
@@ -43,7 +52,15 @@ public class MasterFrameController implements Initializable
       try
       {
          //Get a single file to start.
-         this.file = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")).get(3);
+         try
+         {
+            this.file = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")).get(0);
+         } catch (NullPointerException e)
+         {
+            System.err.println("No directory selected");
+            Platform.exit();//force closes the GUI
+            return;
+         }
 
          if (!file.exists())
          {
@@ -54,20 +71,21 @@ public class MasterFrameController implements Initializable
          if (ExtensionHandler.isVideo(this.file))
          {
             displayVideo();
-         }
-
-         else if(ExtensionHandler.isImage(this.file))
+         } else if (ExtensionHandler.isImage(this.file))
          {
             displayImage();
-         }
-         else
+         } else
          {
             System.err.println("Unsupported file type: " + this.file.getName());
             videoViewer.setVisible(false);
             imageViewer.setVisible(false);
+            return;
          }
-      }
-      catch (Exception e)
+
+         extensionLabel.setText("." + this.file.getName().substring(this.file.getName().lastIndexOf(".") + 1));
+         renameErrorFieldLabel.setVisible(false);
+         renameTextfield.setText(this.file.getName().substring(0, this.file.getName().lastIndexOf(".")));
+      } catch (Exception e)
       {
          System.err.println("Error initializing media player: " + e.getMessage());
          e.printStackTrace();
@@ -82,7 +100,24 @@ public class MasterFrameController implements Initializable
    @FXML
    public void renameButtonTrigger(ActionEvent event)
    {
-      System.out.println( "Hello World! Rename");
+      System.out.println("Hello World! Rename");
+
+      String textFieldInput = renameTextfield.getText();
+      System.out.println(textFieldInput);
+
+      if (textFieldInput.equals(""))
+      {
+         renameErrorFieldLabel.setText("Please enter a valid name");
+         renameErrorFieldLabel.setVisible(true);
+         return;
+      }
+      else if(textFieldInput.contains("."))
+      {
+         renameErrorFieldLabel.setText("Do not include file extension");
+         renameErrorFieldLabel.setVisible(true);
+         return;
+      }
+
    }
 
    /**
@@ -93,12 +128,12 @@ public class MasterFrameController implements Initializable
    @FXML
    public void deleteButtonTrigger(ActionEvent event)
    {
-      System.out.println( "Hello World! Delete");
+      System.out.println("Hello World! Delete");
    }
 
    /**
     * Displays a video in the assigned MediaView component.
-    *
+    * <p>
     * This method initializes a Media object with the file URI, creates a MediaPlayer to play the video,
     * and associates the MediaPlayer with the MediaView component (`videoViewer`). The video is
     * configured to autoplay and loop indefinitely. If an image is currently being displayed in the
@@ -123,7 +158,7 @@ public class MasterFrameController implements Initializable
 
    /**
     * Displays an image in the assigned ImageView component.
-    *
+    * <p>
     * This method initializes an Image object with the URI of the file, sets it
     * to the ImageView component (`imageViewer`), and ensures the component is
     * visible. If a video is currently being displayed in the MediaView component

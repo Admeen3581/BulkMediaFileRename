@@ -15,6 +15,9 @@ public class DirectoryIterator
      */
     public static List<File> iterate(File directory)
     {
+        if (directory == null)
+            return null;
+
         if (!directory.exists() || !directory.isDirectory())
             return new ArrayList<>();
 
