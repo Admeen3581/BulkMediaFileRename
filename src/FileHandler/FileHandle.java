@@ -1,7 +1,5 @@
 package FileHandler;
 
-import NameProviders.NameProvider;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
