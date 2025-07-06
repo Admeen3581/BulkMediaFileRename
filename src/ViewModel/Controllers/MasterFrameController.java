@@ -188,7 +188,31 @@ public class MasterFrameController implements Initializable
    @FXML
    public void deleteButtonTrigger(ActionEvent event)
    {
-      System.out.println("Hello World! Delete");
+      //Video files get locked when playing. Kill the media before renaming.
+      if(this.mediaPlayer != null)
+      {
+         this.mediaPlayer.stop();
+         this.mediaPlayer.dispose();
+         this.mediaPlayer = null;
+      }
+
+      if(this.file.delete())
+      {
+         //switch scene
+         this.directoryCurrentIndex++;
+         if(this.directoryCurrentIndex >= this.directory.size())
+         {
+            this.exit();
+         }
+         else
+         {
+            this.runMediaRename();
+         }
+      }
+      else
+      {
+         this.displayTextfieldError("! - Unable to delete file");
+      }
    }
 
    /**
