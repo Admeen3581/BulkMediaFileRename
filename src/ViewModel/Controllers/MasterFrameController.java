@@ -1,5 +1,8 @@
 package ViewModel.Controllers;
 
+import FileHandler.DirectoryBrowser;
+import FileHandler.DirectoryIterator;
+import FileHandler.ExtensionHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,26 +42,27 @@ public class MasterFrameController implements Initializable
    {
       try
       {
-         this.file = new File("assets/aupj8534.mp4");//hardcoded for testing
+         //Get a single file to start.
+         this.file = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")).get(3);
+
          if (!file.exists())
          {
             System.err.println("Media file not found: " + file.getAbsolutePath());
             return;
          }
-         String fileName = this.file.getName().toUpperCase();
 
-         if (isVideo(fileName))
+         if (ExtensionHandler.isVideo(this.file))
          {
             displayVideo();
          }
 
-         else if(isImage(fileName))
+         else if(ExtensionHandler.isImage(this.file))
          {
             displayImage();
          }
          else
          {
-            System.err.println("Unsupported file type: " + fileName);
+            System.err.println("Unsupported file type: " + this.file.getName());
             videoViewer.setVisible(false);
             imageViewer.setVisible(false);
          }
@@ -102,7 +106,12 @@ public class MasterFrameController implements Initializable
     */
    private void displayVideo()
    {
-      Media media = new Media(file.toURI().toString());
+      if (this.file.getName().toUpperCase().endsWith(".MOV"))
+      {
+         this.file = ExtensionHandler.convertToCompatibleType(this.file);
+      }
+
+      Media media = new Media(this.file.toURI().toString());
       MediaPlayer player = new MediaPlayer(media);
       player.setAutoPlay(true);
       player.setCycleCount(MediaPlayer.INDEFINITE);
@@ -127,30 +136,5 @@ public class MasterFrameController implements Initializable
 
       this.imageViewer.setVisible(true);
       this.videoViewer.setVisible(false);
-   }
-
-   /**
-    * Determines whether the given file name corresponds to a video file.
-    *
-    * @param fileName the name of the file to be checked
-    * @return true if the file name ends with ".mp4", false otherwise
-    */
-   private boolean isVideo(String fileName)
-   {
-      return fileName.endsWith(".MP4") || fileName.endsWith(".MOV");
-   }
-
-   /**
-    * Determines whether the given file name corresponds to an image file.
-    *
-    * @param fileName the name of the file to be checked
-    * @return true if the file name ends with ".gif", ".jpg", ".png", or ".jpeg", false otherwise
-    */
-   private boolean isImage(String fileName)
-   {
-      return fileName.endsWith(".GIF") ||
-             fileName.endsWith(".JPG") ||
-             fileName.endsWith(".PNG") ||
-             fileName.endsWith(".JPEG");
    }
 }
