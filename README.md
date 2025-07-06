@@ -109,7 +109,7 @@ git clone https://github.com/yourusername/BulkFileRename.git
 | 🎨 **Pattern-Based Naming** | Custom naming patterns |
 | ⚡ **Batch Processing** | Process multiple files simultaneously |
 | 📱 **Additional Formats** | Expanded file format support |
-| ↩️ **Undo/Redo** | Mistake-proof operations |
+| ↩️ **Undo/Redo** | Mistake-proof operations (specifically with the delete button) |
 | 📦 **Installer** | Easy installation package |
 | 🎭 **Visual Styles** | Enhanced UI themes |
 | 🌙 **Dark Mode** | Easy on the eyes |
