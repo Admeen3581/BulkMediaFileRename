@@ -3,6 +3,7 @@ package ViewModel.Controllers;
 import FileHandler.DirectoryBrowser;
 import FileHandler.DirectoryIterator;
 import FileHandler.ExtensionHandler;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
@@ -85,6 +87,12 @@ public class MasterFrameController implements Initializable
          extensionLabel.setText("." + this.file.getName().substring(this.file.getName().lastIndexOf(".") + 1));
          renameErrorFieldLabel.setVisible(false);
          renameTextfield.setText(this.file.getName().substring(0, this.file.getName().lastIndexOf(".")));
+
+         //Await loading of JavaFX Stage & Scene
+         Platform.runLater(() -> {
+            renameTextfield.requestFocus();
+            renameTextfield.selectAll();
+         });
       } catch (Exception e)
       {
          System.err.println("Error initializing media player: " + e.getMessage());
@@ -100,25 +108,34 @@ public class MasterFrameController implements Initializable
    @FXML
    public void renameButtonTrigger(ActionEvent event)
    {
-      System.out.println("Hello World! Rename");
-
-      String textFieldInput = renameTextfield.getText();
-      System.out.println(textFieldInput);
+      String textFieldInput = this.renameTextfield.getText().trim();
 
       if (textFieldInput.equals(""))
       {
-         renameErrorFieldLabel.setText("Please enter a valid name");
-         renameErrorFieldLabel.setVisible(true);
-         return;
+         this.displayTextfieldError("! - Please enter a valid name");
       }
       else if(textFieldInput.contains("."))
       {
-         renameErrorFieldLabel.setText("Do not include file extension");
-         renameErrorFieldLabel.setVisible(true);
-         return;
+         this.displayTextfieldError("! - Do not include file extension");
       }
-
+      else if(textFieldInput.matches(".*[\\\\/:*?\"<>|!@#$%^&*()\\[\\]{}'\"`~+=;:?].*"))
+      {
+         this.displayTextfieldError("! - Do not include special characters");
+      }
+      else if(textFieldInput.length() > 70)
+      {
+         this.displayTextfieldError("! - File name is too long");
+      }
+      else if(textFieldInput.length() < 6)
+      {
+         this.displayTextfieldError("! - File name is too short");
+      }
+      else
+      {
+         this.renameErrorFieldLabel.setVisible(false);
+      }
    }
+
 
    /**
     * Handles the action event triggered by pressing the delete button.
@@ -172,4 +189,50 @@ public class MasterFrameController implements Initializable
       this.imageViewer.setVisible(true);
       this.videoViewer.setVisible(false);
    }
+
+   /**
+    * Displays an error message on the rename error label and makes the label visible.
+    *
+    * This method sets the text of the `renameErrorFieldLabel` to the specified error message
+    * and ensures the label is visible to notify the user of an error. Additionally, it
+    * triggers a shake animation on the error label to emphasize the message.
+    *
+    * @param title the error message to be displayed on the rename error label
+    */
+   private void displayTextfieldError(String title)
+   {
+      this.renameErrorFieldLabel.setText(title);
+      this.renameErrorFieldLabel.setVisible(true);
+      shakeErrorMessage();
+   }
+
+   /**
+    * Creates a shake animation for the rename error message label if it is currently visible.
+    *
+    * This method applies a horizontal shaking motion to the label `renameErrorFieldLabel`
+    * to visually draw attention to an error message. The animation is implemented using a
+    * `TranslateTransition` that moves the label horizontally back and forth over a short
+    * duration of 50 milliseconds per cycle. The motion consists of four cycles with
+    * auto-reversing movements, ensuring the label returns to its original position.
+    *
+    * The method first checks if the `renameErrorFieldLabel` is visible before initiating
+    * the animation, ensuring it only activates when an error message is displayed.
+    */
+   private void shakeErrorMessage()
+   {
+      if(this.renameErrorFieldLabel.isVisible())
+      {
+         // Create a translate transition for the shake effect
+         TranslateTransition shake = new TranslateTransition(Duration.millis(50), this.renameErrorFieldLabel);
+
+         shake.setFromX(0);
+         shake.setToX(10);
+
+         shake.setCycleCount(4);
+         shake.setAutoReverse(true);
+
+         shake.play();
+      }
+   }
+
 }
