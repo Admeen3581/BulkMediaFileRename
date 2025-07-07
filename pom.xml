@@ -5,19 +5,19 @@
            http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.yourcompany</groupId>
-    <artifactId>your-app</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>io.github.admeen3581</groupId>
+    <artifactId>bulk-media-file-rename</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>24</maven.compiler.source>
+        <maven.compiler.target>24</maven.compiler.target>
 
-        <!-- JavaFX version and platform classifier -->
+        <!-- JavaFX version -->
         <javafx.version>20.0.2</javafx.version>
-        <!-- replace with win, linux, or mac based on your dev/target platform -->
+        <!-- Default platform (will be overridden by profiles) -->
         <javafx.platform>win</javafx.platform>
     </properties>
 
@@ -45,6 +45,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
             <version>${javafx.version}</version>
             <classifier>${javafx.platform}</classifier>
         </dependency>
@@ -93,7 +99,12 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.yourcompany.MainApp</mainClass>
+                    <mainClass>Program.Main</mainClass>
+                    <options>
+                        <option>--enable-native-access=javafx.graphics</option>
+                        <option>--enable-native-access=javafx.media</option>
+                        <option>--sun-misc-unsafe-memory-access=allow</option>
+                    </options>
                 </configuration>
             </plugin>
 
@@ -108,7 +119,53 @@
                     </includes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
+    <!-- Detects OS -->
+    <profiles>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <javafx.platform>win</javafx.platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <javafx.platform>mac</javafx.platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                </os>
+            </activation>
+            <properties>
+                <javafx.platform>linux</javafx.platform>
+            </properties>
+        </profile>
+    </profiles>
 </project>
