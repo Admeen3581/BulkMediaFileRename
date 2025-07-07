@@ -3,8 +3,9 @@
 <div align="center">
 
 ![Java](https://img.shields.io/badge/Java-24-orange?style=for-the-badge&logo=java)
-![JavaFX](https://img.shields.io/badge/JavaFX-GUI-blue?style=for-the-badge&logo=java)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![JavaFX](https://img.shields.io/badge/JavaFX-GUI-orange?style=for-the-badge&logo=java)
+![Maven](https://img.shields.io/badge/Dependencies-Maven-blue?style=for-the-badge)
+![License](https://img.shields.io/badge/license-gnu-red?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge)
 
 *A JavaFX-based GUI application for bulk renaming media files with visual preview capabilities*
@@ -28,12 +29,13 @@
 | 🗑️ **File Deletion** | Remove files that are no longer relevant |
 
 </div>
+<br/>
 
 ## 🚀 Getting Started
 
 ### 📋 Prerequisites
 
-```bash
+```
 ☑️ Java SDK 24 or higher
 ☑️ JavaFX runtime
 ☑️ JUnit (developers)
@@ -42,20 +44,28 @@
 
 ### 🛠️ Installation
 
-```shell script
-# 1. Clone the repository
-git clone https://github.com/yourusername/BulkFileRename.git
 
-# 2. Open the project in your IDE
-# 3. Add the following to your runner's VM options (supress unrelated warnings):
-   #--enable-native-access=ALL-UNNAMED
-   #--sun-misc-unsafe-memory-access=allow
-# 4. Config your run configuration:
-   #Build with the cmd line `clean javafx:run`
-```
+##### 1. Clone the repository
+   ```shell script
+   git clone https://github.com/yourusername/BulkFileRename.git
+   ```
+
+##### 2. Open the project in your IDE
+##### 3. Add the following to your runner's VM options (supress unrelated warnings):
+   ```shell script
+   --enable-native-access=ALL-UNNAMED
+   --sun-misc-unsafe-memory-access=allow
+   ```
+##### 4. Config your run configuration - Build with cmd line:
+   ```shell script
+   clean javafx:run
+   ```
+
 
 
 > 💡 **Note**: Plans to build an installer are in the works
+
+<br/>
 
 ## 🎮 Usage
 
@@ -80,6 +90,8 @@ git clone https://github.com/yourusername/BulkFileRename.git
 5. **🔄 File Change**: Changes the file name in the directory selected
 6. **🗑️ Delete**: If you decide the file is no longer relevant to your needs, deletion is possible
 
+<br/>
+
 ## 🏗️ Project Structure
 
 ```
@@ -90,6 +102,7 @@ git clone https://github.com/yourusername/BulkFileRename.git
 └── 🔄 DirectoryIterator.java        # File iteration utilities
 ```
 
+<br/>
 
 ## 🎯 Validation Rules
 
@@ -103,6 +116,8 @@ git clone https://github.com/yourusername/BulkFileRename.git
 | 💡 **Smart Feedback** | `Visual Cues` | Clear error notifications |
 
 </div>
+
+<br/>
 
 ## 🔮 Future Enhancements
 
@@ -121,6 +136,7 @@ git clone https://github.com/yourusername/BulkFileRename.git
 
 </div>
 
+<br/>
 
 ## 🤝 Contributing
 
@@ -130,6 +146,8 @@ I welcome contributions! Feel free to:
 - 💡 Suggest features
 - 🔧 Submit pull requests
 - 📖 Improve documentation
+
+<br/>
 
 ## 📜 License
 
@@ -144,5 +162,3 @@ This project is open source and available under the [MIT License](LICENSE).
 *Star ⭐ this repo if you found it helpful!*
 
 </div>
-```
-
