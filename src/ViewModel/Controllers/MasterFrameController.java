@@ -42,7 +42,7 @@ public class MasterFrameController implements Initializable
 
    /**
     * Initializes the controller and sets up media display functionality.
-    * <p>
+    *
     * This method is called after the FXML loader has fully initialized the scene. It attempts
     * to load a media file and determine its type based on the file extension. Supported file
     * types include videos (e.g., ".mp4") and images (e.g., ".gif", ".jpg", ".png", ".jpeg").
