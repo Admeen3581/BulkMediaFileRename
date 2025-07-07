@@ -42,7 +42,12 @@
             <classifier>${javafx.platform}</classifier>
         </dependency>
         <!-- (Add javafx-graphics, javafx-fxml etc. if you need them) -->
-
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.platform}</classifier>
+        </dependency>
         <!-- JUnit 5.8.1 for tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -60,7 +65,7 @@
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>ffmpeg-platform</artifactId>
-            <version>5.1-1.5.8</version>
+            <version>5.1.2-1.5.8</version>
         </dependency>
     </dependencies>
 
