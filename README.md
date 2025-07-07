@@ -47,7 +47,11 @@
 git clone https://github.com/yourusername/BulkFileRename.git
 
 # 2. Open the project in your IDE
-# 3. Build and run the application
+# 3. Add the following to your runner's VM options (supress unrelated warnings):
+   #--enable-native-access=ALL-UNNAMED
+   #--sun-misc-unsafe-memory-access=allow
+# 4. Config your run configuration:
+   #Build with the cmd line `clean javafx:run`
 ```
 
 
