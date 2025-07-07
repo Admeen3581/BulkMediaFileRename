@@ -1,6 +1,7 @@
 # Compiled class file
 *.class
 /out/
+/target/
 
 # Log file
 *.log
@@ -27,6 +28,7 @@ hs_err_pid*
 ./vs/
 ./vscode/
 *.idea
+*.iml
 
 # Testing Assets
 /assets
