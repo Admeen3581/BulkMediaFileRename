@@ -15,29 +15,54 @@ public class VideoTranscoder
 
    public static void transcodeToMp4(Path inFile, Path outFile) throws Exception
    {
-      try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(inFile.toString());
-           FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(
-                 outFile.toString(),
-                 grabber.getImageWidth(), grabber.getImageHeight(),
-                 grabber.getAudioChannels()))
-      {
+      FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(inFile.toString());
+      FFmpegFrameRecorder recorder = null;
 
+      try
+      {
          grabber.start();
 
-         recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
+         // Get source properties
+         int width = grabber.getImageWidth();
+         int height = grabber.getImageHeight();
+         int audioChannels = grabber.getAudioChannels();
+         double frameRate = grabber.getFrameRate();
+
+         recorder = new FFmpegFrameRecorder(outFile.toString(), width, height);
          recorder.setFormat("mp4");
-         recorder.setFrameRate(grabber.getFrameRate());
-         recorder.setVideoBitrate(4_000_000);// ~4Mbps
-         recorder.setAudioCodec(avcodec.AV_CODEC_ID_AAC);
-         recorder.setAudioBitrate(128_000);// 128kbps
+
+         //Codec Features
+         recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
+         recorder.setFrameRate(frameRate);
+         recorder.setVideoBitrate(4_000_000);//4mbps
+
+         if (audioChannels > 0)
+         {
+            recorder.setAudioChannels(audioChannels);
+            recorder.setAudioCodec(avcodec.AV_CODEC_ID_AAC);
+            recorder.setAudioBitrate(128_000);//128kps
+            recorder.setSampleRate(grabber.getSampleRate());
+         }
+
          recorder.start();
 
+         //Add Parallelism
          Frame frame;
-         while ((frame = grabber.grabFrame()) != null) {
+         while ((frame = grabber.grabFrame()) != null)
+         {
             recorder.record(frame);
          }
       }
+      finally
+      {
+         if (recorder != null)
+         {
+            try { recorder.stop(); } catch (Exception e) { /* ignore */ }
+         }
+         try { grabber.stop(); } catch (Exception e) { /* ignore */ }
+      }
    }
+
 
    public void processFolder(Path folder) throws Exception {
       Files.list(folder)
@@ -57,7 +82,8 @@ public class VideoTranscoder
             });
    }
 
-   public void shutdown() {
+   public void shutdown()
+   {
       exec.shutdown();
    }
 }
