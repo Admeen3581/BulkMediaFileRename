@@ -17,14 +17,6 @@ public class ExtensionHandler
       if (file == null)
          return false;
 
-      for(String type : ADJUSTABLE_TYPES)
-      {
-         if(file.getName().toUpperCase().endsWith(type))
-         {
-            return true;
-         }
-      }
-
       return file.getName().toUpperCase().endsWith(".MP4");
    }
 

@@ -121,6 +121,7 @@ public class VideoTranscoder
             {
                VideoTranscoder.transcodeToMp4(in, out);
                Files.delete(in);
+               new MasterFrameController().addToDirectory(out.toFile());
                System.out.println("\u001B[0;92mSTATUS: Converted - " + in +" @ "+ (System.currentTimeMillis()-startTime)/1000.0 +"s\u001B[0m");
             }
             catch (Exception e)
@@ -130,6 +131,6 @@ public class VideoTranscoder
          });
       });
       exec.shutdown();
-      exec.awaitTermination(30, TimeUnit.SECONDS);
+      exec.awaitTermination(1, TimeUnit.SECONDS);
    }
 }

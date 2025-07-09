@@ -44,6 +44,11 @@ public class MasterFrameController implements Initializable
    private List<File> directory;
    private int directoryCurrentIndex;
 
+   public MasterFrameController()
+   {
+      this.directory = new ArrayList<>();
+   }
+
    /**
     * Initializes the controller and sets up media display functionality.
     *
@@ -63,7 +68,7 @@ public class MasterFrameController implements Initializable
       {
          try
          {
-            this.directory = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse"));
+            this.directory.addAll(DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")));
             this.file = this.directory.get(0);//Future: Allow user to override and select a specific start point.
             this.directoryCurrentIndex = 0;
          }
@@ -307,8 +312,8 @@ public class MasterFrameController implements Initializable
       //Force exit.
    }
 
-   public void addToDirectory(List<File> directory)
+   public void addToDirectory(File file)
    {
-      this.directory.addAll(directory);
+      this.directory.add(file);
    }
 }
