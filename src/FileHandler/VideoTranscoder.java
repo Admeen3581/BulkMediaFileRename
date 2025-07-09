@@ -1,21 +1,27 @@
 package FileHandler;
 
 //Imports
+import ViewModel.Controllers.MasterFrameController;
 import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.*;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 public class VideoTranscoder
 {
-   private final ExecutorService exec = Executors.newFixedThreadPool(2);
-
+   /**
+    * Transcodes a video file to MP4 format using the H.264 video codec and AAC audio codec.
+    *
+    * @param inFile  the input video file path (e.g. a .MOV or HEVC file)
+    * @param outFile the output file path to write the .MP4
+    * @throws Exception if an error occurs during grabbing, recording, or threading
+    */
    public static void transcodeToMp4(Path inFile, Path outFile) throws Exception
    {
       FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(inFile.toString());
@@ -93,11 +99,18 @@ public class VideoTranscoder
    }
 
 
-   public void processFolder(Path folder) throws Exception
+   /**
+    * Processes all `.MOV` files in the given folder by transcoding them to `.MP4` format in parallel.
+    *
+    * @param folder the folder containing .MOV files to transcode
+    * @throws Exception if any IO or transcoding errors occur during folder scan or processing
+    */
+   public static void processFolder(Path folder) throws Exception
    {
       org.bytedeco.ffmpeg.global.avutil.av_log_set_level(avutil.AV_LOG_ERROR);//suppression of warnings
-
       long startTime = System.currentTimeMillis();//time logger
+
+      ExecutorService exec = Executors.newFixedThreadPool(4);
 
       Files.list(folder).filter(f -> f.toString().toUpperCase().endsWith(".MOV")).forEach(in ->
       {
@@ -116,10 +129,7 @@ public class VideoTranscoder
             }
          });
       });
-   }
-
-   public void shutdown()
-   {
       exec.shutdown();
+      exec.awaitTermination(30, TimeUnit.SECONDS);
    }
 }

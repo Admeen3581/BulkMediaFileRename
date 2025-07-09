@@ -2,6 +2,7 @@ package FileHandler;
 
 //Imports
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,16 @@ public class DirectoryIterator
 
         if (!directory.exists() || !directory.isDirectory())
             return new ArrayList<>();
+
+        try
+        {
+            VideoTranscoder.processFolder(Paths.get(directory.getPath()));//Converts before files are displayed.
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to convert folder to MP4: " + directory.getPath() + "\n" + e.getMessage());
+            return null;
+        }
 
         List<File> mediaFiles = new ArrayList<>();
         File[] files = directory.listFiles();

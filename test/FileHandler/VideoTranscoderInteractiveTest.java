@@ -59,20 +59,15 @@ public class VideoTranscoderInteractiveTest
         
         System.out.println("Processing folder: " + testFolder);
         
-        VideoTranscoder transcoder = new VideoTranscoder();
-        
         try
         {
             long startTime = System.currentTimeMillis();
             
-            transcoder.processFolder(testFolder);
+            VideoTranscoder.processFolder(testFolder);
             
             // Wait a bit for async processing to complete
             System.out.println("Processing started... waiting for completion...");
             Thread.sleep(2000); // Give it 2 seconds to start processing
-            
-            // Shutdown and wait for completion
-            transcoder.shutdown();
             
             long endTime = System.currentTimeMillis();
             long duration = endTime - startTime;
@@ -86,11 +81,6 @@ public class VideoTranscoderInteractiveTest
         {
             System.err.println("✗ Folder processing failed:");
             e.printStackTrace();
-        }
-        finally
-        {
-            // Ensure shutdown even if there's an error
-            transcoder.shutdown();
         }
     }
 }
