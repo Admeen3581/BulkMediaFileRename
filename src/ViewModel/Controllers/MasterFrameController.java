@@ -1,8 +1,10 @@
 package ViewModel.Controllers;
 
+//Imports
 import FileHandler.DirectoryBrowser;
 import FileHandler.DirectoryIterator;
 import FileHandler.ExtensionHandler;
+import FileHandler.VideoTranscoder;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -19,6 +21,8 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -40,6 +44,11 @@ public class MasterFrameController implements Initializable
    private List<File> directory;
    private int directoryCurrentIndex;
 
+   public MasterFrameController()
+   {
+      this.directory = new ArrayList<>();
+   }
+
    /**
     * Initializes the controller and sets up media display functionality.
     *
@@ -59,9 +68,8 @@ public class MasterFrameController implements Initializable
       {
          try
          {
-            //Future: Allow user to override and select a specific start point.
-            this.directory = DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse"));
-            this.file = this.directory.get(0);
+            this.directory.addAll(DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")));
+            this.file = this.directory.get(0);//Future: Allow user to override and select a specific start point.
             this.directoryCurrentIndex = 0;
          }
          catch (NullPointerException e)//User Cancel Action
@@ -225,11 +233,6 @@ public class MasterFrameController implements Initializable
     */
    private void displayVideo()
    {
-      if (this.file.getName().toUpperCase().endsWith(".MOV"))
-      {
-         this.file = ExtensionHandler.convertToCompatibleType(this.file);
-      }
-
       Media media = new Media(this.file.toURI().toString());
       this.mediaPlayer = new MediaPlayer(media);
       this.mediaPlayer.setAutoPlay(true);
@@ -309,4 +312,8 @@ public class MasterFrameController implements Initializable
       //Force exit.
    }
 
+   public void addToDirectory(File file)
+   {
+      this.directory.add(file);
+   }
 }
