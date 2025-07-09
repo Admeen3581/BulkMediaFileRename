@@ -2,12 +2,15 @@ package FileHandler;
 
 //Imports
 import org.bytedeco.ffmpeg.global.avcodec;
+import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class VideoTranscoder
 {
@@ -46,12 +49,38 @@ public class VideoTranscoder
 
          recorder.start();
 
-         //Add Parallelism
+         BlockingQueue<Frame> frameQueue = new LinkedBlockingQueue<>(100);
+         Frame poisonPill = new Frame(); //null pointer
+
+
+         Thread grabberThread = new Thread(() ->
+         {
+            try
+            {
+               Frame frame;
+               while ((frame = grabber.grabFrame()) != null)
+               {
+                  frameQueue.put(frame.clone());
+               }
+
+               frameQueue.put(poisonPill); //death to the thread.
+            }
+            catch (Exception e)
+            {
+               e.printStackTrace();
+            }
+         });
+
+         grabberThread.start();
+
          Frame frame;
-         while ((frame = grabber.grabFrame()) != null)
+         while ((frame = frameQueue.take()) != poisonPill)
          {
             recorder.record(frame);
+
          }
+
+         grabberThread.join();
       }
       finally
       {
@@ -64,22 +93,29 @@ public class VideoTranscoder
    }
 
 
-   public void processFolder(Path folder) throws Exception {
-      Files.list(folder)
-            .filter(f -> f.toString().toUpperCase().endsWith(".MOV"))
-            .forEach(in -> {
-               Path out = in.resolveSibling(
-                     in.getFileName().toString().replaceFirst("\\.\\w+$", ".mp4"));
-               exec.submit(() -> {
-                  try {
-                     VideoTranscoder.transcodeToMp4(in, out);
-                     Files.delete(in);   // remove old file
-                     System.out.println("Converted: " + in);
-                  } catch (Exception e) {
-                     e.printStackTrace();
-                  }
-               });
-            });
+   public void processFolder(Path folder) throws Exception
+   {
+      org.bytedeco.ffmpeg.global.avutil.av_log_set_level(avutil.AV_LOG_ERROR);//suppression of warnings
+
+      long startTime = System.currentTimeMillis();//time logger
+
+      Files.list(folder).filter(f -> f.toString().toUpperCase().endsWith(".MOV")).forEach(in ->
+      {
+         Path out = in.resolveSibling(in.getFileName().toString().replaceFirst("\\.\\w+$", ".MP4"));
+         exec.submit(() ->
+         {
+            try
+            {
+               VideoTranscoder.transcodeToMp4(in, out);
+               Files.delete(in);
+               System.out.println("\u001B[0;92mSTATUS: Converted - " + in +" @ "+ (System.currentTimeMillis()-startTime)/1000.0 +"s\u001B[0m");
+            }
+            catch (Exception e)
+            {
+               e.printStackTrace();
+            }
+         });
+      });
    }
 
    public void shutdown()

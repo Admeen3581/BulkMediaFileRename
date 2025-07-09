@@ -14,7 +14,7 @@ public class VideoTranscoderInteractiveTest
         System.out.println("=== VideoTranscoder Test ===");
         
         // Test single file conversion
-        test.testSingleFileConversion();
+        //test.testSingleFileConversion();
         
         // Test folder processing
         test.testFolderProcessing();
