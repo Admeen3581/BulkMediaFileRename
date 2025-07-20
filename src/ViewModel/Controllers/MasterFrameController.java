@@ -4,7 +4,6 @@ package ViewModel.Controllers;
 import FileHandler.DirectoryBrowser;
 import FileHandler.DirectoryIterator;
 import FileHandler.ExtensionHandler;
-import FileHandler.VideoTranscoder;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -21,7 +20,6 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;

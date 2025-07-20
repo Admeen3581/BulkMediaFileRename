@@ -40,13 +40,13 @@ public class VideoTranscoder
          //Codec Features
          recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
          recorder.setFrameRate(frameRate);
-         recorder.setVideoBitrate(4_000_000);//4mbps
+         recorder.setVideoBitrate(grabber.getVideoBitrate());
 
          if (audioChannels > 0)
          {
             recorder.setAudioChannels(audioChannels);
             recorder.setAudioCodec(avcodec.AV_CODEC_ID_AAC);
-            recorder.setAudioBitrate(128_000);//128kps
+            recorder.setAudioBitrate(grabber.getAudioBitrate());
             recorder.setSampleRate(grabber.getSampleRate());
          }
 
