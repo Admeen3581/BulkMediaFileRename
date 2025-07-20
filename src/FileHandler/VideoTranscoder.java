@@ -118,7 +118,7 @@ public class VideoTranscoder
             {
                VideoTranscoder.transcodeToMp4(in, out);
                Files.delete(in);
-               new MasterFrameController().addToDirectory(out.toFile());
+               MasterFrameController.masterDirectory.add(out.toFile());
                System.out.println("\u001B[0;92mSTATUS: Converted - " + in +" @ "+ (System.currentTimeMillis()-startTime)/1000.0 +"s\u001B[0m");
             }
             catch (Exception e)

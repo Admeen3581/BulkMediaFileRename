@@ -39,12 +39,13 @@ public class MasterFrameController implements Initializable
    private Label extensionLabel;
 
    private File file;//doesn't support .MOV
-   private List<File> directory;
    private int directoryCurrentIndex;
+
+   public static List<File> masterDirectory;
 
    public MasterFrameController()
    {
-      this.directory = new ArrayList<>();
+      masterDirectory = new ArrayList<>();
    }
 
    /**
@@ -66,8 +67,8 @@ public class MasterFrameController implements Initializable
       {
          try
          {
-            this.directory.addAll(DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")));
-            this.file = this.directory.get(0);//Future: Allow user to override and select a specific start point.
+            masterDirectory.addAll(DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")));
+            this.file = masterDirectory.get(0);//Future: Allow user to override and select a specific start point.
             this.directoryCurrentIndex = 0;
          }
          catch (NullPointerException e)//User Cancel Action
@@ -88,7 +89,7 @@ public class MasterFrameController implements Initializable
 
    private void runMediaRename()
    {
-      this.file = this.directory.get(this.directoryCurrentIndex);
+      this.file = masterDirectory.get(this.directoryCurrentIndex);
 
       if (!file.exists())
       {
@@ -169,7 +170,7 @@ public class MasterFrameController implements Initializable
          {
             //switch scene
             this.directoryCurrentIndex++;
-            if(this.directoryCurrentIndex >= this.directory.size())
+            if(this.directoryCurrentIndex >= masterDirectory.size())
             {
                this.exit();
             }
@@ -206,7 +207,7 @@ public class MasterFrameController implements Initializable
       {
          //switch scene
          this.directoryCurrentIndex++;
-         if(this.directoryCurrentIndex >= this.directory.size())
+         if(this.directoryCurrentIndex >= masterDirectory.size())
          {
             this.exit();
          }
@@ -308,10 +309,5 @@ public class MasterFrameController implements Initializable
    {
       //Display that directory rename is complete.
       //Force exit.
-   }
-
-   public void addToDirectory(File file)
-   {
-      this.directory.add(file);
    }
 }
