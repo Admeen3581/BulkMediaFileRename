@@ -126,6 +126,7 @@ public class VideoTranscoder
                e.printStackTrace();
             }
          });
+         System.out.println("\u001B[0;92mSTATUS: Converted all videos...\u001B[0m");
       });
       exec.shutdown();
       exec.awaitTermination(1, TimeUnit.SECONDS);
