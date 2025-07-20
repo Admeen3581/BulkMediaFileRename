@@ -40,12 +40,14 @@ public class MasterFrameController implements Initializable
 
    private File file;//doesn't support .MOV
    private int directoryCurrentIndex;
+   private boolean skipFlag;
 
    public static List<File> masterDirectory;
 
    public MasterFrameController()
    {
       masterDirectory = new ArrayList<>();
+      this.skipFlag = false;
    }
 
    /**
@@ -181,7 +183,17 @@ public class MasterFrameController implements Initializable
          }
          else
          {
-            this.displayTextfieldError("! - Unable to rename file");
+            if(!skipFlag)
+            {
+               this.skipFlag = true;
+               this.displayTextfieldError("! - Unable to rename. Press to skip.");
+            }
+            else
+            {
+               this.skipFlag = false;
+               this.directoryCurrentIndex++;
+               this.runMediaRename();
+            }
          }
       }
    }
