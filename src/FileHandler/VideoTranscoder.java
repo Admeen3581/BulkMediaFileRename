@@ -8,6 +8,7 @@ import org.bytedeco.javacv.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.*;
 
 public class VideoTranscoder
@@ -40,13 +41,13 @@ public class VideoTranscoder
          //Codec Features
          recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
          recorder.setFrameRate(frameRate);
-         recorder.setVideoBitrate(4_000_000);//4mbps
+         recorder.setVideoBitrate(grabber.getVideoBitrate());
 
          if (audioChannels > 0)
          {
             recorder.setAudioChannels(audioChannels);
             recorder.setAudioCodec(avcodec.AV_CODEC_ID_AAC);
-            recorder.setAudioBitrate(128_000);//128kps
+            recorder.setAudioBitrate(grabber.getAudioBitrate());
             recorder.setSampleRate(grabber.getSampleRate());
          }
 
@@ -107,18 +108,27 @@ public class VideoTranscoder
       org.bytedeco.ffmpeg.global.avutil.av_log_set_level(avutil.AV_LOG_ERROR);//suppression of warnings
       long startTime = System.currentTimeMillis();//time logger
 
-      ExecutorService exec = Executors.newFixedThreadPool(4);
+      ExecutorService exec = Executors.newFixedThreadPool(6);
 
       Files.list(folder).filter(f -> f.toString().toUpperCase().endsWith(".MOV")).forEach(in ->
       {
-         Path out = in.resolveSibling(in.getFileName().toString().replaceFirst("\\.\\w+$", ".MP4"));
+         String filename = in.getFileName().toString();
+
+         int dot = filename.lastIndexOf('.');
+         String newName = (dot == -1 ? filename : filename.substring(0, dot)) + ".MP4";
+         String tempName = (dot == -1 ? filename : filename.substring(0, dot)) + ".TMP";
+
+         Path tmp = in.resolveSibling(tempName);
+         Path out = in.resolveSibling(newName);
+
          exec.submit(() ->
          {
             try
             {
-               VideoTranscoder.transcodeToMp4(in, out);
+               VideoTranscoder.transcodeToMp4(in, tmp);
                Files.delete(in);
-               new MasterFrameController().addToDirectory(out.toFile());
+               Files.move(tmp, out, StandardCopyOption.ATOMIC_MOVE);
+               MasterFrameController.masterDirectory.add(out.toFile());
                System.out.println("\u001B[0;92mSTATUS: Converted - " + in +" @ "+ (System.currentTimeMillis()-startTime)/1000.0 +"s\u001B[0m");
             }
             catch (Exception e)

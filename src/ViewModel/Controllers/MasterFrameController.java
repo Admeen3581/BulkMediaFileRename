@@ -4,7 +4,6 @@ package ViewModel.Controllers;
 import FileHandler.DirectoryBrowser;
 import FileHandler.DirectoryIterator;
 import FileHandler.ExtensionHandler;
-import FileHandler.VideoTranscoder;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -21,7 +20,6 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -41,12 +39,15 @@ public class MasterFrameController implements Initializable
    private Label extensionLabel;
 
    private File file;//doesn't support .MOV
-   private List<File> directory;
    private int directoryCurrentIndex;
+   private boolean skipFlag;
+
+   public static List<File> masterDirectory;
 
    public MasterFrameController()
    {
-      this.directory = new ArrayList<>();
+      masterDirectory = new ArrayList<>();
+      this.skipFlag = false;
    }
 
    /**
@@ -68,8 +69,8 @@ public class MasterFrameController implements Initializable
       {
          try
          {
-            this.directory.addAll(DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")));
-            this.file = this.directory.get(0);//Future: Allow user to override and select a specific start point.
+            masterDirectory.addAll(DirectoryIterator.iterate(DirectoryBrowser.selectDirectory("Select a directory to browse")));
+            this.file = masterDirectory.get(0);//Future: Allow user to override and select a specific start point.
             this.directoryCurrentIndex = 0;
          }
          catch (NullPointerException e)//User Cancel Action
@@ -90,11 +91,13 @@ public class MasterFrameController implements Initializable
 
    private void runMediaRename()
    {
-      this.file = this.directory.get(this.directoryCurrentIndex);
+      this.file = masterDirectory.get(this.directoryCurrentIndex);
 
       if (!file.exists())
       {
          System.err.println("Media file not found: " + file.getAbsolutePath());
+         this.directoryCurrentIndex++;
+         this.runMediaRename();
          return;
       }
 
@@ -111,6 +114,8 @@ public class MasterFrameController implements Initializable
          System.err.println("Unsupported file type: " + this.file.getName());
          this.videoViewer.setVisible(false);
          this.imageViewer.setVisible(false);
+         this.directoryCurrentIndex++;
+         this.runMediaRename();
          return;
       }
 
@@ -171,7 +176,7 @@ public class MasterFrameController implements Initializable
          {
             //switch scene
             this.directoryCurrentIndex++;
-            if(this.directoryCurrentIndex >= this.directory.size())
+            if(this.directoryCurrentIndex >= masterDirectory.size())
             {
                this.exit();
             }
@@ -182,7 +187,17 @@ public class MasterFrameController implements Initializable
          }
          else
          {
-            this.displayTextfieldError("! - Unable to rename file");
+            if(!skipFlag)
+            {
+               this.skipFlag = true;
+               this.displayTextfieldError("! - Unable to rename. Press to skip.");
+            }
+            else
+            {
+               this.skipFlag = false;
+               this.directoryCurrentIndex++;
+               this.runMediaRename();
+            }
          }
       }
    }
@@ -208,7 +223,7 @@ public class MasterFrameController implements Initializable
       {
          //switch scene
          this.directoryCurrentIndex++;
-         if(this.directoryCurrentIndex >= this.directory.size())
+         if(this.directoryCurrentIndex >= masterDirectory.size())
          {
             this.exit();
          }
@@ -310,10 +325,5 @@ public class MasterFrameController implements Initializable
    {
       //Display that directory rename is complete.
       //Force exit.
-   }
-
-   public void addToDirectory(File file)
-   {
-      this.directory.add(file);
    }
 }
