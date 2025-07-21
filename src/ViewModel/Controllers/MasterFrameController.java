@@ -96,6 +96,8 @@ public class MasterFrameController implements Initializable
       if (!file.exists())
       {
          System.err.println("Media file not found: " + file.getAbsolutePath());
+         this.directoryCurrentIndex++;
+         this.runMediaRename();
          return;
       }
 
@@ -112,6 +114,8 @@ public class MasterFrameController implements Initializable
          System.err.println("Unsupported file type: " + this.file.getName());
          this.videoViewer.setVisible(false);
          this.imageViewer.setVisible(false);
+         this.directoryCurrentIndex++;
+         this.runMediaRename();
          return;
       }
 

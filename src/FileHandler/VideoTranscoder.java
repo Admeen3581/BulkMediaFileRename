@@ -8,6 +8,7 @@ import org.bytedeco.javacv.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.*;
 
 public class VideoTranscoder
@@ -107,17 +108,26 @@ public class VideoTranscoder
       org.bytedeco.ffmpeg.global.avutil.av_log_set_level(avutil.AV_LOG_ERROR);//suppression of warnings
       long startTime = System.currentTimeMillis();//time logger
 
-      ExecutorService exec = Executors.newFixedThreadPool(4);
+      ExecutorService exec = Executors.newFixedThreadPool(6);
 
       Files.list(folder).filter(f -> f.toString().toUpperCase().endsWith(".MOV")).forEach(in ->
       {
-         Path out = in.resolveSibling(in.getFileName().toString().replaceFirst("\\.\\w+$", ".MP4"));
+         String filename = in.getFileName().toString();
+
+         int dot = filename.lastIndexOf('.');
+         String newName = (dot == -1 ? filename : filename.substring(0, dot)) + ".MP4";
+         String tempName = (dot == -1 ? filename : filename.substring(0, dot)) + ".TMP";
+
+         Path tmp = in.resolveSibling(tempName);
+         Path out = in.resolveSibling(newName);
+
          exec.submit(() ->
          {
             try
             {
-               VideoTranscoder.transcodeToMp4(in, out);
+               VideoTranscoder.transcodeToMp4(in, tmp);
                Files.delete(in);
+               Files.move(tmp, out, StandardCopyOption.ATOMIC_MOVE);
                MasterFrameController.masterDirectory.add(out.toFile());
                System.out.println("\u001B[0;92mSTATUS: Converted - " + in +" @ "+ (System.currentTimeMillis()-startTime)/1000.0 +"s\u001B[0m");
             }
@@ -126,7 +136,6 @@ public class VideoTranscoder
                e.printStackTrace();
             }
          });
-         System.out.println("\u001B[0;92mSTATUS: Converted all videos...\u001B[0m");
       });
       exec.shutdown();
       exec.awaitTermination(1, TimeUnit.SECONDS);
